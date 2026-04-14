@@ -17,9 +17,13 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['employee', 'staff', 'admin'],
+        enum: ['employee', 'staff', 'admin', 'super_admin'],
         default: 'employee'
+    },
+    isActive: {  //  true = user can access, false = blocked (not deleted) 
+        type: Boolean,
+        default: true
     }
-}, { timestamps: true });
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema);

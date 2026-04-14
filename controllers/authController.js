@@ -95,9 +95,17 @@ exports.Login = async (req,res) =>{
             return res.status(400).json({
                 error: true,
                 success: false,
-                message: "User Already Exist"
+                message: "User not Found"
             });   
         }
+        if(!user.isActive)
+            {
+                return res.status(403).json({
+                    error: true,
+                    success: false,
+                    message: "Account is deactivated. Contact Admin"
+                });
+            }
 
         let isMatch = await bcrypt.compare(password,user.password)
         if(!isMatch)

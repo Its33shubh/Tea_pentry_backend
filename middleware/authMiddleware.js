@@ -1,27 +1,47 @@
 const JWT = require('jsonwebtoken')
+const User = require('../models/user')
 
-const authMiddleware =(req,res,next)=>{
+const authMiddleware = async (req, res, next) => {
     try {
-            const token = req.headers.authorization;
-            // console.log(token);
+        const token = req.headers.authorization;
+        // console.log(token);
 
-            if(!token)
-            {
+        if (!token) {
+            return res.status(401).json({
+                error: true,
+                success: false,
+                message: "No Token , Access Denied"
+            })
+        }
+
+        const cleanToken = token.split(" ")[1];
+
+        const decoded = JWT.verify(cleanToken, process.env.JWT_SECRET)
+
+        const user = await User.findById(decoded.id)
+
+        if (!user) {
+            if (!user) {
                 return res.status(401).json({
-                    error:true,
-                    success:false,
-                    message:"No Token , Access Denied"
+                    error: true,
+                    success: false,
+                    message: "User not found"
                 })
             }
+        }
 
-            const cleanToken = token.split(" ")[1];
+        if (!user.isActive) {
+            return res.status(403).json({
+                error: true,
+                success: false,
+                message: "Account is deactivated"
+            })
+        }
 
-            const decoded = JWT.verify(cleanToken,process.env.JWT_SECRET) 
+        req.user = user
+        
+        next();
 
-            req.user = decoded
-
-            next();
-            
     } catch (err) {
         return res.status(401).json({
             error: true,

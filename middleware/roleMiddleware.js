@@ -10,7 +10,7 @@ const roleMiddleware = (...allowedRoles) => {
                 return res.status(403).json({
                     error: true,
                     success: false,
-                    message: "Access Denied"
+                    message: `Access Denied. Required role: ${allowedRoles.join(', ')}`
                 });
             }
 
