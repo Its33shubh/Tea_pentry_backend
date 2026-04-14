@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const connectDB = require('./config/db')
 const authRoutes = require('./routes/authRoutes')
+const employeeRoutes = require('./routes/employeeRoutes')
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.get('/',(req,res)=>{
 })  
 
 app.use('/api/auth', authRoutes);
+app.use('/api/employee', employeeRoutes)
 
 PORT = process.env.PORT || 5000
 

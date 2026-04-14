@@ -8,7 +8,7 @@ const requestSchema = new mongoose.Schema({
     },
     item: {
         type: String,
-        enum: ['tea', 'coffee', 'water', 'snack'],
+        enum: ['tea', 'coffee', 'water', 'snacks'],
         required: true
     },
     note: {
@@ -17,8 +17,11 @@ const requestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'in-progress', 'delivered'],
+        enum: ['pending', 'in_progress', 'delivered'],
         default: 'pending'
+    },
+    statusUpdatedAt: {
+        type: Date
     }
 }, { timestamps: true });
 
