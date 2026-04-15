@@ -91,4 +91,52 @@ exports.getAllUsers = async(req,res) =>{
     }
 }
 
+exports.updateUserRole = async (req, res) => {
+    try {
+
+        const { role } = req.body;
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                error: true,
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // not change role of super admin
+        if (user.role === "super_admin") {
+            return res.status(403).json({
+                error: true,
+                success: false,
+                message: "Cannot modify Super Admin"
+            });
+        }
+
+        user.role = role;
+        await user.save();
+
+        const userObj = user.toObject();
+        delete userObj.password;
+        
+        res.status(200).json({
+            error: false,
+            success: true,
+            message: "User role updated",
+            user: userObj
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: true,
+            success: false,
+            message: err.message
+        });
+    }
+}
+
+
+
 
