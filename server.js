@@ -6,6 +6,8 @@ const employeeRoutes = require('./routes/employeeRoutes')
 const staffRoutes = require('./routes/staffRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const superAdminRoutes = require('./routes/superAdminRoutes')
+const notificationRoutes = require('./routes/notificationRoutes');
+
 
 const app = express()
 
@@ -22,6 +24,7 @@ app.use('/api/employee', employeeRoutes)
 app.use('/api/staff',staffRoutes)
 app.use('/api/admin',adminRoutes)
 app.use('/api/super-admin',superAdminRoutes)
+app.use('/api/notifications', notificationRoutes);
 
 PORT = process.env.PORT || 5000
 

@@ -1,4 +1,5 @@
 const Request = require('../models/request')
+const Notification = require('../models/notification');  
 
 // GET REQUESTS FOR STAFF
 exports.getAllRequests = async (req, res) => {
@@ -111,6 +112,13 @@ exports.updateRequestStatus = async (req, res) => {
         request.status = status;
 
         await request.save();
+        // message at delivered 
+        if (status === "delivered") {
+            await Notification.create({
+                userId: request.userId,
+                message: "Your order has been delivered"
+            });
+        }
 
         res.status(200).json({
             error: false,
