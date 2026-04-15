@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { getAllRequests , getAllUsers,updateUserRole } = require('../controllers/adminController')
+const { getAllRequests , getAllUsers,updateUserRole,updateUserStatus } = require('../controllers/adminController')
 const authMiddleware = require('../middleware/authMiddleware')
 const roleMiddleware = require('../middleware/roleMiddleware')
 
@@ -16,4 +16,5 @@ router.get('/requests',
 router.get('/users',authMiddleware,roleMiddleware('admin'), getAllUsers)
 
 router.put('/users/:id', authMiddleware, roleMiddleware('admin'), updateUserRole)
+router.put('/users/:id/status',authMiddleware,roleMiddleware('admin'), updateUserStatus)
 module.exports = router
