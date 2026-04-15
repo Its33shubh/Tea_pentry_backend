@@ -181,8 +181,46 @@ exports.updateUserStatus = async(req,res)=>{
             message: err.message
         });
     }
-};
+}
 
+exports.deleteUser = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                error: true,
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // not delete super admin
+        if (user.role === "super_admin") {
+            return res.status(403).json({
+                error: true,
+                success: false,
+                message: "Cannot delete Super Admin"
+            });
+        }
+
+        await user.deleteOne();
+
+        res.status(200).json({
+            error: false,
+            success: true,
+            message: "User deleted"
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: true,
+            success: false,
+            message: err.message
+        });
+    }
+}
 
 
 
