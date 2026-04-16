@@ -2,79 +2,87 @@ const User = require('../models/user')
 const JWT = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-exports.Register = async (req,res)=>{
+exports.Register = async (req, res) => {
     try {
-        
-        let {name,email,password}= req.body;
 
-        // console.log(name,email,password);
+        let { firstName, lastName, email, password, confirmPassword } = req.body;
 
-        if (!name|| !email|| !password)
-        {
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
             return res.status(400).json({
-                error:true,
-                success:false,
-                message:"All Fields Are Require"
-            })
+                error: true,
+                success: false,
+                message: "All Fields Are Required"
+            });
         }
 
-        let emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegExp.test(email))
-        {
+        // email validation
+        let emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegExp.test(email)) {
             return res.status(400).json({
-                error:true,
-                success:false,
-                message:"Invalid Email Formate"
-            })
+                error: true,
+                success: false,
+                message: "Invalid Email Format"
+            });
         }
 
-        if(password.length  <4)
-        {
+        // password length
+        if (password.length < 4) {
             return res.status(400).json({
-                error:true,
-                success:false,
-                message:"Password must be at least 4 characters"
-            })
+                error: true,
+                success: false,
+                message: "Password must be at least 4 characters"
+            });
         }
-        
-        let user = await User.findOne({email})
-        if (user)
-        {
+        if (password !== confirmPassword) {
             return res.status(400).json({
-                error:true,
-                success:false,
-                message:"User already Exist"
-            })
+                error: true,
+                success: false,
+                message: "Passwords do not match"
+            });
+        }
+
+        let user = await User.findOne({ email })
+        if (user) {
+            return res.status(400).json({
+                error: true,
+                success: false,
+                message: "User already exists"
+            });
         }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         user = new User({
-            name,
+            firstName,
+            lastName,
             email,
-            password : hashedPassword
-        })
+            password: hashedPassword
+        });
 
-        await user.save()
+        await user.save();
+
         res.status(201).json({
+            error: false,
+            success: true,
             message: "User registered successfully",
             user: {
                 id: user._id,
-                name: user.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
                 role: user.role
             }
-        })
+        });
 
     } catch (err) {
         res.status(500).json({
-            error:true,
-            success:false,
+            error: true,
+            success: false,
             message: err.message
         });
     }
-}
+};
 
 exports.Login = async (req,res) =>{
     try {
@@ -130,9 +138,11 @@ exports.Login = async (req,res) =>{
             token,
             user: {
                 id: user._id,
-                name: user.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                isActive: user.isActive 
             }
         })
     } catch (err) {

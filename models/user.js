@@ -1,7 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
         type: String,
         required: true
     },
@@ -20,10 +24,11 @@ const userSchema = new mongoose.Schema({
         enum: ['employee', 'staff', 'admin', 'super_admin'],
         default: 'employee'
     },
-    isActive: {  //  true = user can access, false = blocked (not deleted) 
+    isActive: {
         type: Boolean,
         default: true
     }
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);
+
+module.exports = mongoose.model("User", userSchema);
