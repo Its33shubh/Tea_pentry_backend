@@ -15,6 +15,9 @@ app.use(express.json())
 
 connectDB()
 
+// console.log("EMAIL_USER:", process.env.EMAIL_USER);
+// console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
+
 app.get('/',(req,res)=>{
     res.send("API running")
 })  
