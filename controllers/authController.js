@@ -255,3 +255,60 @@ exports.resetPassword = async (req, res) => {
     });
   }
 }
+
+exports.changePassword = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+  
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found"
+        });
+      }
+  
+      const { oldPassword, newPassword, confirmPassword } = req.body;
+  
+      // check old password
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+  
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: "Old password is incorrect"
+        });
+      }
+  
+      // validate new password
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Passwords do not match"
+        });
+      }
+  
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 6 characters"
+        });
+      }
+  
+      //  update password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+  
+      await user.save();
+  
+      res.status(200).json({
+        success: true,
+        message: "Password changed successfully"
+      });
+  
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+}
