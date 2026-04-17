@@ -5,6 +5,15 @@ const fs = require("fs");
 exports.createCategory = async (req, res) => {
   try {
     const { name } = req.body;
+    
+    const existing = await Category.findOne({ name });
+
+    if (existing) {
+      return res.json({
+        success: false,
+        message: "Category already exists"
+      });
+    }
 
     let imageUrl = "";
 
