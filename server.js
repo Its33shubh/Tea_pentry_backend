@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/adminRoutes')
 const superAdminRoutes = require('./routes/superAdminRoutes')
 const notificationRoutes = require('./routes/notificationRoutes');
 const categoryRoutes = require("./routes/categoryRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 
 
@@ -31,6 +32,7 @@ app.use('/api/admin',adminRoutes)
 app.use('/api/super-admin',superAdminRoutes)
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/category',categoryRoutes)
+app.use('/api/product',productRoutes)
 
 PORT = process.env.PORT || 5000
 
